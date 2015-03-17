@@ -1,5 +1,4 @@
 //Fox Sign "Nine-Tailed Danmaku"
-//This spell was actually partially based off an OC, but I guess it could work for Ran too.
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
 #Title["Fox Sign: Nine-Tailed Danmaku"]
@@ -56,21 +55,12 @@ TFinalize;
 		count++;
 		yield;
 }
- 
-task fire{
-	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-	let angleT = GetAngleToPlayer(objBoss);
-	loop(25){
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+count, DS_BALL_S_ORANGE, 5);
-		angleT+=360/25;
-		}
-	}	
 
 task tailstorm{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	wait(70);
 	ascent(i in 0..100){
-		wait(1);
+		wait(2);
 		CreateShotA1(ObjMove_GetX(objBoss)-(15+i)*sin(i*1), ObjMove_GetY(objBoss)-(15+i)*cos(i*1+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
 		CreateShotA1(ObjMove_GetX(objBoss)-(25+i)*cos(i*2), ObjMove_GetY(objBoss)-(25+i)*sin(i*2+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
 		CreateShotA1(ObjMove_GetX(objBoss)+(35+i)*sin(i*3), ObjMove_GetY(objBoss)-(35+i)*cos(i*3+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
@@ -83,9 +73,6 @@ task tailstorm{
 		}
 	}
 
-	
-
-	
 task movement{
 	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
 		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
