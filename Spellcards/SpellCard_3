@@ -14,7 +14,7 @@ let count = 0;
  @Event{
 alternative(GetEventType())
 	case(EV_REQUEST_LIFE){
-		SetScriptResult(2250);
+		SetScriptResult(390);
 		}
 	case(EV_REQUEST_TIMER){
 		SetScriptResult(60);
@@ -25,13 +25,16 @@ alternative(GetEventType())
 	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
 	ObjEnemy_Regist(objBoss);
 	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjEnemy_SetDamageRate(objBoss, 10, 10);
 	ObjPrim_SetTexture(objBoss, imgExRumia);
 	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
 	ObjSprite2D_SetDestCenter(objBoss);
 	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
 	if(count==0){
 		movement;
+		ObjEnemyBossScene_StartSpell(objScene);
 		}
+		
 TFinalize;
 }
 
