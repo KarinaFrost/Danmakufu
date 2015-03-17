@@ -13,7 +13,7 @@ let count = 0;
  @Event{
 alternative(GetEventType())
 	case(EV_REQUEST_LIFE){
-		SetScriptResult(2250);
+		SetScriptResult(1650);
 		}
 	case(EV_REQUEST_TIMER){
 		SetScriptResult(60);
@@ -41,43 +41,36 @@ TFinalize;
 	ObjEnemy_SetIntersectionCircleToPlayer((objBoss), ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
 	if(count==0){
 			TDrawLoop;}
-		if(count%7==0&&count>=60){
+		if(count%15==0&&count>=60){
 			fire;
 		}
-
-		if(count%250==0&&count>=60){
-			slash1;
-			}
+		if(count%20==0&&count>=60){
+			fireB;
+		}
 		count++;
 		yield;
-}
+	}
  
 task fire{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	let angleT = GetAngleToPlayer(objBoss);
 	loop(25){
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3-2/3, count, DS_BALL_S_ORANGE, 5);
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3-1/3, count-120, DS_BALL_S_YELLOW, 5);
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, count+120, DS_BALL_S_WHITE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, count, DS_BALL_S_ORANGE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-1/3, count+120, DS_BALL_S_YELLOW, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, count-120, DS_BALL_S_WHITE, 5);
 		angleT+=360/25;
 		}
 	}
-	
-task slash1{
+
+task fireB{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-	wait(70);
-	ascent(i in 0..150){
-		wait(0.5);
-		CreateShotA1(ObjMove_GetX(objBoss)+(20+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_RED, 3+i);
-		CreateShotA1(ObjMove_GetX(objBoss)+(30+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_RED, 3+i);
-		wait(0.5);
-		CreateShotA1(ObjMove_GetX(objBoss)-(20+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_GREEN, 3+i);
-		CreateShotA1(ObjMove_GetX(objBoss)-(30+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_GREEN, 3+i);
+	let angleT = GetAngleToPlayer(objBoss);
+	loop(25){
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+25, DS_RICE_S_RED, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-1/3, angleT+25, DS_RICE_S_BLUE, 5);
+		angleT+=360/25;
 		}
 	}
-
-	
-
 	
 task movement{
 	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
