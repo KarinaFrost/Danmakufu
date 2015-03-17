@@ -1,6 +1,6 @@
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
-#Title["Karina's Third Non-Spell"]
+#Title["Karina's First Non-Spell"]
 #Text["By Karina"]
 #BGM[""]
  
@@ -13,7 +13,7 @@ let count = 0;
  @Event{
 alternative(GetEventType())
 	case(EV_REQUEST_LIFE){
-		SetScriptResult(1650);
+		SetScriptResult(2250);
 		}
 	case(EV_REQUEST_TIMER){
 		SetScriptResult(60);
@@ -41,15 +41,19 @@ TFinalize;
 	ObjEnemy_SetIntersectionCircleToPlayer((objBoss), ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
 	if(count==0){
 			TDrawLoop;}
-		if(count%5==0&&count>=60){
+		if(count%95==0&&count>=60){
+			homingshot;
+			homingshot2;
+			}
+		if(count%30==0&&count>=60){
 			fire;
-		}
-		if(count%35==0&&count>=60){
+			}
+		if(count%35==0&&!count%70==0&&count>=60){
 			fireB;
 		}
-		if(count%140==0&&count>=60){
-			homingring(3);
-		}
+		if(count%70==0&&count>=60){
+			fireC;
+			}
 		count++;
 		yield;
 }
@@ -58,38 +62,52 @@ task fire{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	let angleT = GetAngleToPlayer(objBoss);
 	loop(25){
-		CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), -4.5, count,0.15, 3, DS_BALL_S_ORANGE, 5);
-		CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), -4.5, count+120,0.15, 3, DS_BALL_S_YELLOW, 5);
-		CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), -4.5, count-120, 0.15, 3, DS_BALL_S_WHITE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+count, DS_BALL_S_ORANGE, 5);
 		angleT+=360/25;
 		}
 	}
+	
 task fireB{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-	let angle = 0;
-	while(angle<360&&count%2==0){
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, angle, DS_BALL_S_A_PURPLE, 30);
-		angle += 10;
+	let angleT = GetAngleToPlayer(objBoss);
+	loop(10){
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, count, DS_ICE_BLUE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, count+120, DS_ICE_SKY, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, count-90, DS_ICE_YELLOW, 5);
+		wait(1);
+		angleT+=360/25;
 		}
-	while(angle<360&&!count%2==0){
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, angle+5, DS_BALL_S_A_PURPLE, 30);
-		angle += 10;
+	}	
+task fireC{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let angleT = GetAngleToPlayer(objBoss);
+	loop(10){
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, -count, DS_ICE_BLUE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, -count+90, DS_ICE_SKY, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 3, -count-120, DS_ICE_YELLOW, 5);
+		wait(1);
+		angleT-=360/25;
+		}
+	}
+
+task homingshot{
+		let angle=0;
+		while(angle<360){
+			let obj = CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 5, angle, -0.10, 0, DS_BILL_BLUE, 30);
+			ObjMove_AddPatternA4(obj, 55, 3, 0, 0, 0, 3, GetPlayerObjectID, DS_BILL_RED);
+			angle += 15;
 		}
 	}
 	
-task homingring(i){
-		if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-		let angle = 0;
+task homingshot2{
+		let angle=0;
 		while(angle<360){
-			let obj = CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 5, angle, -0.10, 1, DS_ICE_RED+i, 30);
-			ObjMove_AddPatternA4(obj, 60, 3, 0, 0, 0, 3+(i/3), GetPlayerObjectID, NO_CHANGE);
+			let obj = CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 4, angle, -0.10, 0, DS_BILL_PURPLE, 30);
+			ObjMove_AddPatternA4(obj, 45, 4, 0, 0, 0, 3, GetPlayerObjectID, DS_BILL_WHITE);
 			angle += 15;
-			if(i==7){
-				 i=0;
-			}
-			i++;
 		}
 	}
+
 task movement{
 	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
 		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
