@@ -1,0 +1,126 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Specter Sign: Phantom Flames"]
+#Text["By Karina"]
+#BGM[""]
+ 
+#include"script/default_system/Default_ShotConst.txt"
+ 
+let objBoss;
+let objScene=GetEnemyBossSceneObjectID();
+let count = 0;
+
+ @Event{
+alternative(GetEventType())
+	case(EV_REQUEST_LIFE){
+		SetScriptResult(550);
+		}
+	case(EV_REQUEST_TIMER){
+		SetScriptResult(60);
+		}
+	case(EV_REQUEST_SPELL_SCORE){
+		SetScriptResult(3000000);
+		}
+	}
+ 
+@Initialize{
+	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	ObjEnemy_Regist(objBoss);
+	ObjEnemy_SetDamageRate(objBoss, 10, 10);
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	ObjSprite2D_SetDestCenter(objBoss);
+	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
+	if(count==0){
+		movement;
+		ObjEnemyBossScene_StartSpell(objScene);
+		}
+TFinalize;
+}
+
+
+ 
+@MainLoop{
+	ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
+	ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
+		if(count==0){
+		TDrawLoop;}
+
+		if(count%130==0&&count>=60){
+			fire;
+		}
+		if(count%30==0&&count>=60){
+			fireB;
+		}
+		count++;
+		yield;
+	}
+  
+task fire{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let angleT = GetAngleToPlayer(objBoss);
+	let objcount = 0;
+	let obj = CreateShotA1(ObjMove_GetX(objBoss)+rand(-50, 50), ObjMove_GetY(objBoss)+rand(-50, 50), 3, angleT+rand(-45, 45), DS_BALL_L_BLUE , 15);
+    while(Obj_IsDeleted(obj)){
+		ObjMove_SetPosition(obj, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss));
+		}
+	while(!Obj_IsDeleted(obj)&&objcount%19==0){
+		CreateShotA2(ObjMove_GetX(obj)+rand(-10, 10), ObjMove_GetY(obj)+rand(-10, 10), 0, rand(0, 360), 0.01, 2, DS_FIRE_BLUE , 15);
+		wait(3);
+		yield;
+		}
+	yield;
+	angleT+=360/1;
+	objcount++;
+	yield;
+	}
+	
+task fireB{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let angleT = GetAngleToPlayer(objBoss);
+	let i = 0;
+	loop(32){
+		CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), -1.5, angleT+count, 0.03, 2, DS_RICE_S_RED, 5);	
+		CreateShotA2(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), -1.5, angleT-count, 0.03, 2, DS_RICE_S_BLUE, 5);
+		angleT+=360/32;
+		i++;}
+		}
+
+task movement{
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
+		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
+		wait(560);		
+		}
+	}
+  
+task TDrawLoop {
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	}
+  
+task TFinalize {
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){yield;}
+		if(ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SHOOTDOWN_COUNT)
+		+ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SPELL_COUNT) == 0){
+		AddScore(ObjEnemyBossScene_GetInfo(objScene,INFO_SPELL_SCORE));
+	}
+	Obj_Delete(objBoss);
+	DeleteShotAll(TYPE_ALL,TYPE_IMMEDIATE);
+	SetAutoDeleteObject(true);
+	CloseScript(GetOwnScriptID());
+	return;
+	}
+ 
+function GetCenterX{
+	return GetStgFrameWidth/2;
+	}
+	
+function GetCenterY{
+	return GetStgFrameHeight/2;
+	}
+ 
+function wait(n){
+	loop(n){yield;}
+	}
