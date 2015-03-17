@@ -1,0 +1,121 @@
+//Fox Sign "Nine-Tailed Danmaku"
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Fox Sign: Nine-Tailed Danmaku"]
+#Text["By Karina"]
+#BGM[""]
+ 
+#include"script/default_system/Default_ShotConst.txt"
+ 
+let objBoss;
+let objScene=GetEnemyBossSceneObjectID();
+let count = 0;
+
+ @Event{
+alternative(GetEventType())
+	case(EV_REQUEST_LIFE){
+		SetScriptResult(2250);
+		}
+	case(EV_REQUEST_TIMER){
+		SetScriptResult(60);
+		}
+	}
+ 
+@Initialize{
+	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	ObjEnemy_Regist(objBoss);
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	ObjSprite2D_SetDestCenter(objBoss);
+	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
+	if(count==0){
+		movement;
+		}
+TFinalize;
+}
+
+
+ 
+@MainLoop{
+	ObjEnemy_SetIntersectionCircleToShot((objBoss), ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
+	ObjEnemy_SetIntersectionCircleToPlayer((objBoss), ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
+	if(count==0){
+			TDrawLoop;}
+		if(count==60&&count>=60){
+			tailstorm;
+		}
+
+		if(count%350==0&&count>=60){
+			tailstorm;
+			}
+		count++;
+		yield;
+}
+ 
+task fire{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let angleT = GetAngleToPlayer(objBoss);
+	loop(25){
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+count, DS_BALL_S_ORANGE, 5);
+		angleT+=360/25;
+		}
+	}	
+
+task tailstorm{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	wait(70);
+	ascent(i in 0..100){
+		wait(1);
+		CreateShotA1(ObjMove_GetX(objBoss)-(15+i)*sin(i*1), ObjMove_GetY(objBoss)-(15+i)*cos(i*1+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)-(25+i)*cos(i*2), ObjMove_GetY(objBoss)-(25+i)*sin(i*2+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)+(35+i)*sin(i*3), ObjMove_GetY(objBoss)-(35+i)*cos(i*3+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)-(45+i)*cos(i*4), ObjMove_GetY(objBoss)-(45+i)*sin(i*4+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)+(55+i)*sin(i*5), ObjMove_GetY(objBoss)-(55+i)*cos(i*5+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)+(25+i)*cos(i*6), ObjMove_GetY(objBoss)-(65+i)*sin(i*6+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)-(35+i)*sin(i*7), ObjMove_GetY(objBoss)-(75+i)*cos(i*7+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)+(45+i)*cos(i*8), ObjMove_GetY(objBoss)-(85+i)*sin(i*8+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		CreateShotA1(ObjMove_GetX(objBoss)-(55+i)*sin(i*9), ObjMove_GetY(objBoss)-(95+i)*cos(i*9+i), 1.5, i*15+i+rand(-15, 15), DS_RICE_S_YELLOW, 2+i);
+		}
+	}
+
+	
+
+	
+task movement{
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
+		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
+		wait(200);
+		}
+	}
+  
+task TDrawLoop {
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	}
+  
+task TFinalize {
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){yield;}
+		if(ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SHOOTDOWN_COUNT)
+		+ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SPELL_COUNT) == 0){
+		AddScore(ObjEnemyBossScene_GetInfo(objScene,INFO_SPELL_SCORE));
+	}
+	Obj_Delete(objBoss);
+	DeleteShotAll(TYPE_ALL,TYPE_IMMEDIATE);
+	SetAutoDeleteObject(true);
+	CloseScript(GetOwnScriptID());
+	return;
+	}
+ 
+function GetCenterX{
+	return GetStgFrameWidth/2;
+	}
+	
+function GetCenterY{
+	return GetStgFrameHeight/2;
+	}
+ 
+function wait(n){
+	loop(n){yield;}
+	}
