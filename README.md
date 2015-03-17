@@ -9,6 +9,7 @@ If there are any issues or if you have tips and strategies, please, let me know,
 
 Unless stated, all scripts work with the default files for Danmakufu. If files are actually needed, I'll probably include them here, as well as a note in the script file itself directing you to the proper file. If I am not allowed to rehost a file, I will link you to a place you can get the script/images needed.
 
-Thank you, Sparren, for the tutorials, as well as hopefully continued support and assistance with Danmakufu PH3.
+At somepoint, I'll include an actual Plural that uses these scripts, though for the sake of ease, the file setup won't match this, as this is simply for organizational purposes.
 
-          ~Karina
+Thank you, Sparren, for the tutorials, as well as hopefully continued support and assistance with Danmakufu PH3.
+                ~Karina
