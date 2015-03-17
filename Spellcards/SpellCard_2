@@ -1,3 +1,4 @@
+//Phantom Sign "Ghostly Embers"
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
 #Title["Specter Sign: Phantom Flames"]
@@ -27,7 +28,7 @@ alternative(GetEventType())
 	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
 	ObjEnemy_Regist(objBoss);
 	ObjEnemy_SetDamageRate(objBoss, 10, 10);
-	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	let imgExRumia = GetCurrentScriptDirectory ~ "../ExRumia.png";
 	ObjPrim_SetTexture(objBoss, imgExRumia);
 	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
 	ObjSprite2D_SetDestCenter(objBoss);
