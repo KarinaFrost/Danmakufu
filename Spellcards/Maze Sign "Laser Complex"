@@ -1,0 +1,136 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Maze Sign: Laser Construct"]
+#Text["By Karina"]
+#BGM[""]
+ 
+#include"script/default_system/Default_ShotConst.txt"
+ 
+let objBoss;
+let objScene=GetEnemyBossSceneObjectID();
+let count = 0;
+
+ @Event{
+alternative(GetEventType())
+	case(EV_REQUEST_LIFE){
+		SetScriptResult(500);
+		}
+	case(EV_REQUEST_TIMER){
+		SetScriptResult(60);
+		}
+	case(EV_REQUEST_SPELL_SCORE){
+		SetScriptResult(3000000);
+		}
+	}
+ 
+@Initialize{
+	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+	ObjEnemy_SetDamageRate(objBoss, 10, 10);
+	ObjEnemy_Regist(objBoss);
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	ObjSprite2D_SetDestCenter(objBoss);
+	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
+	if(count==0){
+		movement;
+		ObjEnemyBossScene_StartSpell(objScene);
+		}
+TFinalize;
+}
+
+
+ 
+@MainLoop{
+	ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
+	ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
+		if(count==0){
+		TDrawLoop;}
+		if(count%240==0&&count>=60){
+			ascent(i in 0..100){
+				SpawnNDLaser(i);
+				}
+			}
+		if(count%5==0&&count>=60){
+			fire;
+		}
+		count++;
+		yield;
+	}
+  
+task fire{
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let angleT = GetAngleToPlayer(objBoss);
+	loop(5){
+		CreateShotA2(ObjMove_GetX(objBoss)+rand(-50, 50), ObjMove_GetY(objBoss)+rand(-50, 50), 0, rand(0, 360), 0.01, 4, DS_RICE_S_GREEN , 5);
+		}
+	}
+ 
+ task SpawnNDLaser(ID){
+	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+	let objcount = 0;
+	let objcount2 = 0;
+	let objcount3 = 0;
+	let objcount4 = 0;
+	let objcount5 = 0;
+	let obj = CreateStraightLaserA1(ObjMove_GetX(objBoss)+60*cos(ID*30), ObjMove_GetY(objBoss)+60*sin(ID*30), ID*30, 80, 16, 85, DS_BALL_M_YELLOW, 35);
+	let obj2 = CreateStraightLaserA1(ObjMove_GetX(objBoss)+120*cos(ID*30), ObjMove_GetY(objBoss)+120*sin(ID*30), ID*30, 80, 16, 85, DS_BALL_M_ORANGE, 35);
+	let obj3 = CreateStraightLaserA1(ObjMove_GetX(objBoss)+180*cos(ID*30), ObjMove_GetY(objBoss)+180*sin(ID*30), ID*30, 80, 16, 85, DS_BALL_M_YELLOW, 35);
+	let obj4 = CreateStraightLaserA1(ObjMove_GetX(objBoss)+240*cos(ID*30), ObjMove_GetY(objBoss)+240*sin(ID*30), ID*30, 80, 16, 85, DS_BALL_M_ORANGE, 35);
+	let obj5 = CreateStraightLaserA1(ObjMove_GetX(objBoss)+300*cos(ID*30), ObjMove_GetY(objBoss)+300*sin(ID*30), ID*30, 180, 16, 85, DS_BALL_M_WHITE, 35);
+	while(!Obj_IsDeleted(obj4&&obj3&&obj2&&obj)){
+		ObjMove_SetPosition(obj, ObjMove_GetX(objBoss)+60*cos(ID*30+objcount),ObjMove_GetY(objBoss)+60*sin(ID*30+objcount));
+	    ObjStLaser_SetAngle(obj, ID*30+objcount);
+		ObjMove_SetPosition(obj2, ObjMove_GetX(objBoss)+120*cos(ID*30+objcount2),ObjMove_GetY(objBoss)+120*sin(ID*30+objcount2));
+	    ObjStLaser_SetAngle(obj2, ID*30+objcount2);
+		ObjMove_SetPosition(obj3, ObjMove_GetX(objBoss)+180*cos(ID*30+objcount3),ObjMove_GetY(objBoss)+180*sin(ID*30+objcount3));
+	    ObjStLaser_SetAngle(obj3, ID*30+objcount3);
+		ObjMove_SetPosition(obj4, ObjMove_GetX(objBoss)+240*cos(ID*30+objcount4),ObjMove_GetY(objBoss)+240*sin(ID*30+objcount4));
+	    ObjStLaser_SetAngle(obj4, ID*30+objcount4);
+		ObjMove_SetPosition(obj5, ObjMove_GetX(objBoss)+300*cos(ID*30+objcount5),ObjMove_GetY(objBoss)+300*sin(ID*30+objcount5));
+	    ObjStLaser_SetAngle(obj5, ID*30+objcount5);
+		objcount++;
+		objcount2= objcount2-0.7;
+		objcount3= objcount3+0.2;
+		objcount4= objcount4-0.1;
+		objcount5= objcount5+0.4;
+		yield;
+		}
+	}
+task movement{
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
+		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+80,GetCenterX-80), rand(GetCenterY-80,GetCenterY-80), 60);
+		wait(320);
+		}
+	}
+  
+task TDrawLoop {
+	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+	}
+  
+task TFinalize {
+	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){yield;}
+		if(ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SHOOTDOWN_COUNT)
+		+ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SPELL_COUNT) == 0){
+		AddScore(ObjEnemyBossScene_GetInfo(objScene,INFO_SPELL_SCORE));
+	}
+	Obj_Delete(objBoss);
+	DeleteShotAll(TYPE_ALL,TYPE_IMMEDIATE);
+	SetAutoDeleteObject(true);
+	CloseScript(GetOwnScriptID());
+	return;
+	}
+ 
+function GetCenterX{
+	return GetStgFrameWidth/2;
+	}
+	
+function GetCenterY{
+	return GetStgFrameHeight/2;
+	}
+ 
+function wait(n){
+	loop(n){yield;}
+	}
