@@ -51,7 +51,7 @@ TFinalize;
 		if(count%130==0&&count>=60){
 			fire;
 		}
-		if(count%30==0&&count>=60){
+		if(count%45==0&&count>=60){
 			fireB;
 		}
 		count++;
@@ -62,7 +62,7 @@ task fire{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	let angleT = GetAngleToPlayer(objBoss);
 	let objcount = 0;
-	let obj = CreateShotA1(ObjMove_GetX(objBoss)+rand(-50, 50), ObjMove_GetY(objBoss)+rand(-50, 50), 3, angleT+rand(-45, 45), DS_BALL_L_BLUE , 15);
+	let obj = CreateShotA2(ObjMove_GetX(objBoss)+rand(-50, 50), ObjMove_GetY(objBoss)+rand(-50, 50), 0, angleT+rand(-45, 45), 0.02, 3.2, DS_BALL_L_BLUE , 15);
     while(Obj_IsDeleted(obj)){
 		ObjMove_SetPosition(obj, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss));
 		}
