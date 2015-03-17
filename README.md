@@ -11,4 +11,4 @@ Unless stated, all scripts work with the default files for Danmakufu. If files a
 
 Thank you, Sparren, for the tutorials, as well as hopefully continued support and assistance with Danmakufu PH3.
 
-`~Karina
+          ~Karina
