@@ -46,7 +46,7 @@ TFinalize;
 		}
 		if(count%33==0&&count>=60){			
 			if(count%2==0){
-				fireBAlt(2);
+				fireBAlt;
 			}
 			if(!count%2==0){
 				fireB;
