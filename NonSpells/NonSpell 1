@@ -13,7 +13,7 @@ let count = 0;
  @Event{
 alternative(GetEventType())
 	case(EV_REQUEST_LIFE){
-		SetScriptResult(1650);
+		SetScriptResult(2250);
 		}
 	case(EV_REQUEST_TIMER){
 		SetScriptResult(60);
@@ -44,10 +44,9 @@ TFinalize;
 		if(count%7==0&&count>=60){
 			fire;
 		}
-		if(count%150==0&&count>=60){
+
+		if(count%250==0&&count>=60){
 			slash1;
-			wait(180);
-			slash2;
 			}
 		count++;
 		yield;
@@ -66,18 +65,17 @@ task fire{
 	
 task slash1{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-	ascent(i in 0..90){
-		CreateShotA1(ObjMove_GetX(objBoss)+60*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*30+i, DS_KUNAI_RED, 3+i);
+	wait(70);
+	ascent(i in 0..150){
+		wait(0.5);
+		CreateShotA1(ObjMove_GetX(objBoss)+(20+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_RED, 3+i);
+		CreateShotA1(ObjMove_GetX(objBoss)+(30+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_RED, 3+i);
+		wait(0.5);
+		CreateShotA1(ObjMove_GetX(objBoss)-(20+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_GREEN, 3+i);
+		CreateShotA1(ObjMove_GetX(objBoss)-(30+i)*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*15+i+rand(-15, 15), DS_KUNAI_GREEN, 3+i);
 		}
 	}
 
-task slash2{
-	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
-	wait(70);
-	ascent(i in 0..90){
-		CreateShotA1(ObjMove_GetX(objBoss)-60*cos(i*5), ObjMove_GetY(objBoss)+60*sin(i*5), 2.5, i*30+i, DS_KUNAI_GREEN, 3+i);
-		}
-	}
 	
 
 	
