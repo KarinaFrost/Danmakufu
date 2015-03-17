@@ -66,9 +66,9 @@ task fireB{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	let angleT = GetAngleToPlayer(objBoss);
 	loop(25){
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+25, DS_RICE_M_BLUE, 5);
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-1/3, angleT+25, DS_RICE__M_PURPLE, 5);
-		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, angleT+25, DS_RICE_M_GREEN, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-2/3, angleT+25, DS_RICE_S_BLUE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5-1/3, angleT+25, DS_RICE_S_PURPLE, 5);
+		CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 2.5, angleT+25, DS_RICE_S_GREEN, 5);
 		angleT+=360/25;
 		}
 	}
