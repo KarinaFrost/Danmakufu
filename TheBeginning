@@ -1,0 +1,152 @@
+//The First Script I ever wrote.
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["My First Danmakufu Script!"]
+#Text["By Karina"]
+#BGM[""]
+ 
+#include"script/default_system/Default_ShotConst.txt"
+ 
+let objBoss;
+let objScene=GetEnemyBossSceneObjectID();
+let count = 0;
+
+ @Event{
+        alternative(GetEventType())
+        case(EV_REQUEST_LIFE){
+                SetScriptResult(2500);
+        }
+        case(EV_REQUEST_TIMER){
+                SetScriptResult(60);
+        }
+        case(EV_REQUEST_SPELL_SCORE){
+                SetScriptResult(30000000);
+        }
+}
+ 
+@Initialize{
+ 
+
+        objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+        ObjEnemy_Regist(objBoss);
+        let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+        ObjPrim_SetTexture(objBoss, imgExRumia);
+        ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+        ObjSprite2D_SetDestCenter(objBoss);
+        ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
+ 
+
+  if(count==0){movement;
+    ObjEnemyBossScene_StartSpell(objScene);}
+        TFinalize;
+}
+
+
+ 
+@MainLoop{
+        ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
+        ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
+        if(count==0){
+            TDrawLoop;}
+        if(count%5==0&&count>=60){
+            fireB;
+        }
+        if(count%15==0&&count>=60){
+            fire;
+        }
+        if(count%300==0&&count>=60){
+            fireC;
+            }
+        count++;
+        yield;
+}
+ 
+task fire{
+    if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
+    let angleT = GetAngleToPlayer(objBoss);
+    ascent(i in 0..8){
+                CreateShotA1(ObjMove_GetX(objBoss)-35, ObjMove_GetY(objBoss), 1.1+i, angleT+5*i, DS_BALL_S_RED+i, 5);
+                CreateShotA1(ObjMove_GetX(objBoss)+35, ObjMove_GetY(objBoss), 1.1+i, angleT-5*i, DS_BALL_S_RED+i, 5);
+                CreateShotA1(ObjMove_GetX(objBoss)-35, ObjMove_GetY(objBoss), 2.1+1, angleT+5, DS_BALL_S_RED+i, 5);
+                CreateShotA1(ObjMove_GetX(objBoss)+35, ObjMove_GetY(objBoss), 2.1, angleT-5, DS_BALL_S_RED+i, 5);
+            }
+            angleT+=360/180;
+}
+ 
+task fireB{
+    let n=1;
+    let angleT = GetAngleToPlayer(objBoss);
+    CreateShotA1(ObjMove_GetX(objBoss)+rand(-8,8), ObjMove_GetY(objBoss), 2.5, angleT+count, DS_RICE_S_WHITE, 5);
+    CreateShotA1(ObjMove_GetX(objBoss)+rand(-8,8), ObjMove_GetY(objBoss), 2.5, angleT+count-90, DS_RICE_S_WHITE, 5);
+    CreateShotA1(ObjMove_GetX(objBoss)+rand(-8,8), ObjMove_GetY(objBoss), 2.5, angleT+count-180, DS_RICE_S_WHITE, 5);
+    CreateShotA1(ObjMove_GetX(objBoss)+rand(-8,8), ObjMove_GetY(objBoss), 2.5, angleT+count+90, DS_RICE_S_WHITE, 5);
+    angleT+=360/360;
+    }
+task fireC{
+      let angleT = GetAngleToPlayer(objBoss);
+	    loop(3){
+	       ascent(i in 0..3){
+                let iAngle = 0;
+                let obj1 = CreateShotA1(ObjMove_GetX(objBoss)+rand(-8,8), ObjMove_GetY(objBoss), 4, iAngle + angleT+ rand(-30,30), DS_SCALE_BLUE, 30);//shot1??
+			               ObjShot_SetDeleteFrame(obj1, 46);//?????46????????
+
+		                          	let jAngle = angleT-15;
+			                           while(jAngle <= angleT-15)
+		                                      	{//(jAngle=-15 ,0 ,15)?3WAY
+			                             	let obj2 = CreateShotA1(0, 0, 0, 0, DS_SCALE_RED, 10);//shot2??
+			                             	ObjMove_AddPatternA4(obj2, 0, 3, jAngle + 180, 0, 0, 3, 5, NO_CHANGE);//??????????
+			                             	ObjShot_SetDeleteFrame(obj2, 61);//?????61????????
+
+			                              
+			                              let obj3 = CreateShotA1(0, 0, angleT-25, 0, DS_SCALE_PURPLE, 10);//shot3??
+    
+                                    
+					                             ObjMove_AddPatternA4(obj3, 0, 2, angleT-20, 0, 0, 3, 10, NO_CHANGE);//??????????
+  				                             ObjShot_AddShotA1(obj2, obj3, 60);// shot2?shot3???(60?????shot3??)
+
+				                          
+				                    ObjShot_AddShotA1(obj1, obj2, 45);// shot1?shot2???(45?????shot2??)
+				            jAngle += 15;
+	    }
+	    angleT+=360/3;
+  
+	}
+}
+}                                                        
+ 
+task movement{
+    while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
+        ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
+        wait(300);
+      }
+  }
+  
+task TDrawLoop {
+  let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
+        ObjPrim_SetTexture(objBoss, imgExRumia);
+        ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
+}
+  
+task TFinalize {
+        while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){yield;}
+        if(ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SHOOTDOWN_COUNT)
+              +ObjEnemyBossScene_GetInfo(objScene, INFO_PLAYER_SPELL_COUNT) == 0){
+          AddScore(ObjEnemyBossScene_GetInfo(objScene,INFO_SPELL_SCORE));
+        }
+        Obj_Delete(objBoss);
+        DeleteShotAll(TYPE_ALL,TYPE_IMMEDIATE);
+        SetAutoDeleteObject(true);
+        CloseScript(GetOwnScriptID());
+        return;
+}
+ 
+function GetCenterX{
+     return GetStgFrameWidth/2;
+}
+function GetCenterY{
+     return GetStgFrameHeight/2;
+}
+ 
+function wait(n){
+     loop(n){yield;}
+}
