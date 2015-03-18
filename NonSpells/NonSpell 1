@@ -25,6 +25,7 @@ alternative(GetEventType())
 	ObjEnemy_Regist(objBoss);
 	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
 	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjEnemy_SetDamageRate(objBoss, 0, 0);
 	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
 	ObjSprite2D_SetDestCenter(objBoss);
 	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
@@ -47,6 +48,9 @@ TFinalize;
 		if(count%20==0&&count>=60){
 			fireB;
 		}
+		if(count==100){
+			ObjEnemy_SetDamageRate(objBoss, 100, 100);
+			}
 		count++;
 		yield;
 	}
