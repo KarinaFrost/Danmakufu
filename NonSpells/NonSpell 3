@@ -25,6 +25,7 @@ alternative(GetEventType())
 	ObjEnemy_Regist(objBoss);
 	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
 	ObjPrim_SetTexture(objBoss, imgExRumia);
+	ObjEnemy_SetDamageRate(objBoss, 0, 0);
 	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
 	ObjSprite2D_SetDestCenter(objBoss);
 	ObjMove_SetDestAtFrame(objBoss, GetCenterX, 60, 60);
@@ -54,6 +55,9 @@ TFinalize;
 		if(count%70==0&&count>=60){
 			fireC;
 			}
+		if(count==100){
+			ObjEnemy_SetDamageRate(objBoss, 100, 100);
+			}
 		count++;
 		yield;
 }
@@ -66,7 +70,6 @@ task fire{
 		angleT+=360/25;
 		}
 	}
-	
 task fireB{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
 	let angleT = GetAngleToPlayer(objBoss);
@@ -77,6 +80,7 @@ task fireB{
 		wait(1);
 		angleT+=360/25;
 		}
+		
 	}	
 task fireC{
 	if(ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0){return;}
@@ -88,6 +92,7 @@ task fireC{
 		wait(1);
 		angleT-=360/25;
 		}
+		
 	}
 
 task homingshot{
@@ -108,6 +113,9 @@ task homingshot2{
 		}
 	}
 
+	
+
+	
 task movement{
 	while(ObjEnemy_GetInfo(objBoss,INFO_LIFE)>0){
 		ObjMove_SetDestAtFrame(objBoss, rand(GetCenterX+120,GetCenterX-120), rand(GetCenterY-120,GetCenterY-120), 60);
