@@ -1,4 +1,3 @@
-//Maze Sign "Laser Construct"
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
 #Title["Maze Sign: Laser Construct"]
@@ -20,13 +19,13 @@ alternative(GetEventType())
 		SetScriptResult(60);
 		}
 	case(EV_REQUEST_SPELL_SCORE){
-		SetScriptResult(3000000);
+		SetScriptResult(15000000);
 		}
 	}
  
 @Initialize{
 	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
-	ObjEnemy_SetDamageRate(objBoss, 10, 10);
+	ObjEnemy_SetDamageRate(objBoss, 0, 0);
 	ObjEnemy_Regist(objBoss);
 	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
 	ObjPrim_SetTexture(objBoss, imgExRumia);
@@ -55,6 +54,9 @@ TFinalize;
 		if(count%5==0&&count>=60){
 			fire;
 		}
+		if(count==180){
+			ObjEnemy_SetDamageRate(objBoss, 10, 10);
+			}
 		count++;
 		yield;
 	}
