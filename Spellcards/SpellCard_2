@@ -20,14 +20,14 @@ alternative(GetEventType())
 		SetScriptResult(60);
 		}
 	case(EV_REQUEST_SPELL_SCORE){
-		SetScriptResult(3000000);
+		SetScriptResult(30000000);
 		}
 	}
  
 @Initialize{
 	objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
 	ObjEnemy_Regist(objBoss);
-	ObjEnemy_SetDamageRate(objBoss, 10, 10);
+	ObjEnemy_SetDamageRate(objBoss, 0, 0);
 	let imgExRumia = GetCurrentScriptDirectory ~ "ExRumia.png";
 	ObjPrim_SetTexture(objBoss, imgExRumia);
 	ObjSprite2D_SetSourceRect(objBoss, 64, 1, 127, 64);
@@ -54,6 +54,9 @@ TFinalize;
 		if(count%45==0&&count>=60){
 			fireB;
 		}
+		if(count==180){
+			ObjEnemy_SetDamageRate(objBoss, 10, 10);
+			}
 		count++;
 		yield;
 	}
